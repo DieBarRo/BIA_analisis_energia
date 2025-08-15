@@ -97,9 +97,9 @@ CREATE TABLE payments (
     payment_id CHAR(36) PRIMARY KEY,
     bill_id CHAR(36) NOT NULL,
     paid_at DATE,
-    method VARCHAR(30),
+    method ENUM('bank_transfer', 'credit_card', 'cash'),
     token VARCHAR(10) NULL,
-    status VARCHAR(20),
+    status ENUM('paid', 'late'),
     FOREIGN KEY (bill_id)
     REFERENCES bills(bill_id)
 );
