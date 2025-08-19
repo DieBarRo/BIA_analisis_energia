@@ -61,7 +61,7 @@ SET deleted_at = NULLIF(@deleted_at_temp, '');
 CREATE TABLE IF NOT EXISTS bills (
     bill_id CHAR(36) PRIMARY KEY,
     contract_id VARCHAR(10) NOT NULL,
-    period VARCHAR(10),
+    period DATE,
     cuttoff_date DATE,
     total DECIMAL(10,4),
     status ENUM('paid', 'issued', 'overdue'),
@@ -72,7 +72,9 @@ CREATE TABLE IF NOT EXISTS bills (
 LOAD DATA INFILE 'C:/ProgramData/MySQL/MySQL Server 8.0/Uploads/prueba_tecnica_BIA/bills.csv'
 INTO TABLE bills
 FIELDS TERMINATED BY ','
-IGNORE 1 LINES;
+IGNORE 1 LINES
+(bill_id,contract_id,@period_temp,cuttoff_date,total,status)
+SET period = STR_TO_DATE(CONCAT(@period_temp, '-01'), '%c-%Y-%d');
 
 
 -- -------------------------------------------------------------------------------------------------------
