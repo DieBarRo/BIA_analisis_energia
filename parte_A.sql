@@ -41,7 +41,7 @@ ORDER BY contract_id, reading_date;
     
 SELECT period,  SUM(total) AS period_invoice_total,
 	SUM(IF(payments.status = 'paid', total, 0)) AS period_paid_total,
-    ROUND((SUM(IF(payments.status = 'paid' AND datediff(paid_at, cuttoff_date) <= 30, total, 0))/ SUM(total)) * 100, 2) AS period_paid_before_30_days
+    ROUND((SUM(IF(payments.status = 'paid' AND datediff(paid_at, cuttoff_date) <= 30, total, 0))/ SUM(total)) * 100, 2) AS percentage_paid_before_30_days
     FROM bills
     LEFT JOIN payments ON bills.bill_id = payments.bill_id
     GROUP BY period
