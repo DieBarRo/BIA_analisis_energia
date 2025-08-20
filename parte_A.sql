@@ -38,21 +38,10 @@ SELECT
 FROM variations
 WHERE prev_day_kwh IS NOT NULL AND ABS(((daily_kwh - prev_day_kwh) / prev_day_kwh) * 100) > 50
 ORDER BY contract_id, reading_date;
-
-SELECT *
-    FROM bills
-    INNER JOIN payments ON bills.bill_id = payments.bill_id
-    WHERE contract_id = "CT00019"
-AND period = "1-2024";
-
-SELECT period, cuttoff_date, total, bills.status AS bill_status, paid_at, payments.status AS payment_status,
-	datediff(paid_at, cuttoff_date) AS days_since_cuttoff
-    FROM bills
-    LEFT JOIN payments ON bills.bill_id = payments.bill_id;
     
-SELECT period,  SUM(total) AS total2,
-	SUM(IF(payments.status = 'paid', total, 0)) AS total_paid,
-    ROUND((SUM(IF(payments.status = 'paid' AND datediff(paid_at, cuttoff_date) <= 30, total, 0))/ SUM(total)) * 100, 2) AS total_paid_before_30_days
+SELECT period,  SUM(total) AS period_invoice_total,
+	SUM(IF(payments.status = 'paid', total, 0)) AS period_paid_total,
+    ROUND((SUM(IF(payments.status = 'paid' AND datediff(paid_at, cuttoff_date) <= 30, total, 0))/ SUM(total)) * 100, 2) AS period_paid_before_30_days
     FROM bills
     LEFT JOIN payments ON bills.bill_id = payments.bill_id
     GROUP BY period
