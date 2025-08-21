@@ -1,3 +1,8 @@
+USE bia_raw;
+
+-- Subquery que consigue las variaciones de mas del 50% absoluto en kwh con
+-- respecto al dia anterior
+
 CREATE OR REPLACE VIEW daily_variations AS
 WITH daily_totals AS (
     SELECT
@@ -28,6 +33,8 @@ FROM variations
 WHERE prev_day_kwh IS NOT NULL
   AND ABS(((daily_kwh - prev_day_kwh) / prev_day_kwh) * 100) > 50;
   
+-- Subquery para contar los contratos con mas de dos dias anomalos por periodo
+
 
 CREATE OR REPLACE VIEW periods_variations AS
 SELECT contract_id, month_read, year_read,
@@ -35,6 +42,11 @@ COUNT(contract_id) AS days_with_anomalies
 FROM bia_raw.daily_variations 
 GROUP BY contract_id, month_read, year_read
 HAVING days_with_anomalies >= 2;
+
+-- --------------------------------------------------------------------------
+
+-- subquery para contar por periodo los contratos que tengan una factura con "contribution"
+-- si la anterior factura no lo tenia
 
 CREATE OR REPLACE VIEW periods_contracts_with_new_contributions AS
 WITH contribution_count AS (
@@ -56,6 +68,11 @@ number_contributions <> 0 AND prev_number_contributions = 0
 GROUP BY period
 ORDER BY period;
 
+
+-- --------------------------------------------------------------------------
+
+-- query para conseguir los porcentajes pagados y lo debido a la empresa junto con los contratos anomalos y
+-- contratos con contribution en un mismo periodo
 
 WITH kpi_without_contracts AS (
 SELECT period,  SUM(total) AS period_invoice_total,

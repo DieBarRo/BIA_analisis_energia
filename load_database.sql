@@ -2,6 +2,9 @@ CREATE DATABASE IF NOT EXISTS bia_raw;
 
 USE bia_raw;
 
+-- para toda la  importación de data se subieron los archivos a la carpeta de uploads de MySQL para
+-- poder operar en modo seguro
+
 CREATE TABLE IF NOT EXISTS companies(
 company_id VARCHAR(10) PRIMARY KEY ,
 name VARCHAR(60),
