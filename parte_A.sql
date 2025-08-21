@@ -58,3 +58,21 @@ SELECT period,  SUM(total) AS period_invoice_total,
     LEFT JOIN payments ON bills.bill_id = payments.bill_id
     GROUP BY period
 	ORDER BY period;
+
+
+-- ------------------------------------------------------------------------
+-- numeral 4
+
+-- Para el numeral 4 consulta con BUG no encontre un bug en el conjunto de datos, sin embargo prodria ser que
+-- al usar la funcionalidad de contar los dias entre las fechas de paid_at y cuttoff_date se deban tomar en cuenta
+-- solo los dias laborales y no todos los  dias por lo que si es requerido se podria cambiar usando la funcion DAYOFWEEK
+-- de MySQL para contar solo los dias de lunes a viernes o crear una tabla con los dias no laborales y contar el rango de fechas
+-- que  sean dias laborales para solucionar el problema.
+
+-- ----------------------------------------------------------------------------
+-- numeral 5
+
+-- crear un indice en la tabla consumptions sobre la columna contract_id ya que se usa para agrupar y ordenar los
+-- datos de las consultas 2 y 3, ademas de que sl tendria que ser actualizado cuando se genera un nuevo contrato lo
+-- cual puede ser una ocurrencia ordenes de magnitud menor a la cantidad de veces que se leen los datos de consumo de 
+-- los contratos. 

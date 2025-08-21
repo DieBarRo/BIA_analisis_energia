@@ -103,3 +103,35 @@ SELECT
     IFNULL(contracts, 0) AS contracts_with_new_contributions
 FROM kpi_without_contracts
 	LEFT JOIN periods_contracts_with_new_contributions AS p ON kpi_without_contracts.period = p.period;
+
+-- ----------------------------------------------------------------------------
+-- numeral 2
+
+-- Cada fila debe ser única y no nula en su clave primaria.
+-- Toda clave foránea debe apuntar a un valor existente en la tabla referida.
+-- Los valores deben estar dentro de rangos o formatos esperados.
+-- Evitar duplicados en campos clave y manejar correctamente los valores nulos.
+-- Asegurar que campos críticos no estén vacíos.
+
+
+-- ----------------------------------------------------------------------------
+-- numeral 3
+
+-- Si tuviera que considerar una partición de la información seria sobre la tabla consumptions que es de por si
+-- la tabla con más datos ya que se agrega una nueva fila por cada hora de cada contrato para cada fecha. La partición 
+-- podría ser por fecha (tipo anual) porque así es posible mantener la información a largo plazo sin que afecte
+-- tanto la velocidad de consultas de años futuros, además de que si los valores de las facturas y lo recolectado son kpi 
+-- para la empresa la agregación por fechas seria relativamente constante.
+
+-- Por otra parte, si esta tabla es de donde se obtiene la data para mostrar a cada cliente su consumo la partición 
+-- se podría hacer por contract_id ya que así es más rápido para cada cliente su consulta de consumo energético o ver anomalías
+-- por cliente específicamente.
+
+-- Por esto mismo los índices que consideraría seria sobre esas mismas columnas ya que son frecuentemente usadas para los queries
+-- además de que se encuentran en varias tablas por lo que también aceleraría el proceso de los joins con bills que es usado para
+-- los kpi del negocio.
+
+-- Por último, para materializar solo sería sobre las vistas creadas para verificar los contratos con anomalías o el número de contratos
+-- con contribución que no lo tenían en la factura anterior, ya que en vez de tener que realizar el subquery la información ya se encontraría
+-- previamente computada en la base de datos, sin embargo, esto solo tiene sentido si la consulta de los kpi del negocio se realiza seguido y se 
+-- puede definir una hora de corte cada día en la cual se actualice la información de las vistas materializadas.
